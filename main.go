@@ -2,29 +2,32 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 )
 
 func main() {
-	var presentation Presentation = NewPresentation("/home/acutewoof/Projects/woofslides/server/TEMPORARY.json")
-	var show Show = Show{&presentation, &presentation.Slides[0]}
-	fmt.Println(*show.Presentation)
-	fmt.Println(*show.CurrentSlide)
-
-	// go to slide 2
-	show.GoToSlide(2)
-
-	fmt.Println(*show.CurrentSlide)
-	fmt.Println(show.ShowCurrentSlide())
-
-	// go forward
-	show.NavSlide(1)
-
-	fmt.Println(*show.CurrentSlide)
-	fmt.Println(show.ShowCurrentSlide())
-
-	// go backward
-	show.NavSlide(-1)
-
-	fmt.Println(*show.CurrentSlide)
-	fmt.Println(show.ShowCurrentSlide())
+	http.HandleFunc("/getip", getip)
+	http.HandleFunc("/getview", getview)
+	http.HandleFunc("/navnext", navnext)
+	http.HandleFunc("/navprev", navprev)
+	http.HandleFunc("/getfiles", getfiles)
+	http.HandleFunc("/load", load)
+	fmt.Println(http.ListenAndServe(":8080", nil))
 }
+
+func getip(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, r.RemoteAddr)
+}
+
+func getview(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Host = %q\n", r.Host)
+	fmt.Fprintf(w, "RemoteAddr= %q\n", r.RemoteAddr)
+}
+
+func navnext(w http.ResponseWriter, r *http.Request) {}
+
+func navprev(w http.ResponseWriter, r *http.Request) {}
+
+func getfiles(w http.ResponseWriter, r *http.Request) {}
+
+func load(w http.ResponseWriter, r *http.Request) {}

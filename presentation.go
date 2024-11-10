@@ -104,6 +104,8 @@ func (p Presentation) GetSlide(i int) string {
 type Show struct {
 	Presentation *Presentation
 	CurrentSlide *Slide
+	Viewer       *string
+	Controller   *string
 }
 
 func (s *Show) GoToSlide(i int) *Slide {
