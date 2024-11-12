@@ -6,28 +6,34 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/getip", getip)
-	http.HandleFunc("/getview", getview)
-	http.HandleFunc("/navnext", navnext)
-	http.HandleFunc("/navprev", navprev)
-	http.HandleFunc("/getfiles", getfiles)
+	http.HandleFunc("/getTip", getTip)
+	http.HandleFunc("/getView", getView)
+	http.HandleFunc("/navNext", navNext)
+	http.HandleFunc("/navPrev", navPrev)
+	http.HandleFunc("/getFiles", getFiles)
 	http.HandleFunc("/load", load)
+
+	http.HandleFunc("/connectToController", connectToController)
+	http.HandleFunc("/connectToViewer", connectToViewer)
+
 	fmt.Println(http.ListenAndServe(":8080", nil))
 }
 
-func getip(w http.ResponseWriter, r *http.Request) {
+func getTip(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, r.RemoteAddr)
 }
 
-func getview(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Host = %q\n", r.Host)
-	fmt.Fprintf(w, "RemoteAddr= %q\n", r.RemoteAddr)
+func getView(w http.ResponseWriter, r *http.Request) {
 }
 
-func navnext(w http.ResponseWriter, r *http.Request) {}
+func navNext(w http.ResponseWriter, r *http.Request) {}
 
-func navprev(w http.ResponseWriter, r *http.Request) {}
+func navPrev(w http.ResponseWriter, r *http.Request) {}
 
-func getfiles(w http.ResponseWriter, r *http.Request) {}
+func getFiles(w http.ResponseWriter, r *http.Request) {}
 
 func load(w http.ResponseWriter, r *http.Request) {}
+
+func connectToController(w http.ResponseWriter, r *http.Request) {}
+
+func connectToViewer(w http.ResponseWriter, r *http.Request) {}
