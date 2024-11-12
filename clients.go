@@ -6,32 +6,52 @@ type Connection struct {
 	Show       *Show
 }
 
-// map[controller address]viewer address
-var pending map[string]string
+var pendingViewers map[string]string = make(map[string]string)     // map[controller address]viewer address
+var pendingControllers map[string]string = make(map[string]string) // map[viewer address]controller address
 
-// map[controller address]point to a Connection
-var connections map[string]*Connection
+var connections map[string]*Connection = make(map[string]*Connection) // map[controller address]point to a Connection
 
-// true or false is returned to tell the consuming function whether or not the connection is accepted
-func addConnection(viewer string, controller string) bool {
-	pendingViewer, ok := pending[controller]
+// -1: viewer/controller is already taken
+//  0: added controller/viewer to waiting list
+//  1: viewer and controller connection initialised
+
+func viewerRequestController(viewer string, controller string) int {
+	pendingController, ok := pendingControllers[viewer]
 
 	if ok {
-		if pendingViewer != viewer {
-			return false
+		if pendingController != controller {
+			return -1
 		}
 	} else {
-		pendingViewer = viewer
+		pendingViewers[controller] = viewer
+		return 0
 	}
 
 	connections[controller] = &Connection{Viewer: viewer, Controller: controller}
-	delete(pending, controller)
+	delete(pendingControllers, viewer)
 
-	return true
+	return 1
 
 }
 
-// NEED TO DO SOMETHING IF THE CONNECTION MUST BE PENDING
+func controllerRequestViewer(controller string, viewer string) int {
+	pendingViewer, ok := pendingViewers[controller]
+
+	if ok {
+		if pendingViewer != viewer {
+			return -1
+		}
+	} else {
+		pendingControllers[viewer] = controller
+		return 0
+	}
+
+	connections[controller] = &Connection{Viewer: viewer, Controller: controller}
+	delete(pendingViewers, controller)
+
+	return 1
+
+}
 
 // true or false is returned to tell the consuming function whether or not the connection exists
 func addShow(controller string, show *Show) bool {
@@ -41,6 +61,8 @@ func addShow(controller string, show *Show) bool {
 		return false
 	}
 
+	show.Viewer = connection.Viewer
+	show.Controller = connection.Controller
 	connection.Show = show
 
 	return true
